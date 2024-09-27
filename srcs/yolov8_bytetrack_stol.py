@@ -406,7 +406,7 @@ def main(args):
 
                     # if args.show:
                     cv2.rectangle(frame, (int(tlwh[0]), int(tlwh[1])), (int(tlwh[0] + tlwh[2]), int(tlwh[1] + tlwh[3])), get_random_color(tid), 2)
-                    cv2.putText(frame, str(tid) + ', ' + class_name, (int(tlwh[0]), int(tlwh[1])), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+                    cv2.putText(frame, str(tid), (int(tlwh[0]), int(tlwh[1])), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
                     tracked_objects.append({
                     'track_id': tid,
                     'class_name': class_name,
@@ -415,16 +415,25 @@ def main(args):
                     'size': size,
                     'score': float(t.score)*100,
                     })
-            out.write(frame)
-            if args.display_video:
-                cv2.imshow('image', frame)
-                cv2.waitKey(1)
 
-            # Detect potential conflicts
-            conflicts = detect_conflict_with_prediction(vehicles)
-            conflict_list.append(conflicts)
+            # # Detect potential conflicts
+            # conflicts = detect_conflict_with_prediction(vehicles)
+            # # conflict_list.append(conflicts)
+            # for vehicle_1, vehicle_2, conflict_loc, ttc in conflicts:
+            #     conflict_list.append({
+            #         'vehicle_1': vehicle_1,
+            #         'vehicle_2': vehicle_2,
+            #         'conflict_loc': conflict_loc,
+            #         'ttc': ttc,
+            #     })
+            #
             # if conflicts:
             #     print(f"Potential conflicts detected: {conflicts}")
+
+
+
+                # print('conflict_list : ', conflict_list)
+                # print('=============================')
             # else:
             #     print("No conflicts detected.")
 
