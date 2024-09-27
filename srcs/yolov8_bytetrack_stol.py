@@ -76,9 +76,6 @@ def vehicle_center_to_latlon(center, bbox):
     lat_offset = 4.500e-06
     lon_final = latlon_coords[0, 0, 0] + lon_offset # 0.5, 0.75 0.905
     lat_final = latlon_coords[0, 0, 1] - lat_offset # 0.5, 0.75 0.905
-    # print(f'final lat/lon: [{lat_final}, {lon_final}]')
-    # must_sensor_dist = haversine_distance(MUST_sensor_loc[1], MUST_sensor_loc[0], lat_final, lon_final)
-    # print(f'distance from MUST sensor: {must_sensor_dist}')
 
     return (lat_final, lon_final)
 
@@ -393,8 +390,7 @@ def main(args):
                 online_cls.append(class_name)
 
                 center_2D = calculate_center_point(bbox)
-                # center = xy2latlon(center_2D)
-                center = vehicle_center_to_latlon(center_2D, bbox)
+                center = xy2latlon(center_2D)
 
                 if tid in prev_centers and tid in prev_times:
                     heading = calculate_bearing(prev_centers[tid], center)
@@ -435,12 +431,7 @@ def main(args):
 
                     if args.udp_save:
                         # Needs to update
-                        x1, y1, x2, y2 = bbox
-                        bbox_width = np.abs(x2 - x1)
-                        bbox_height = np.abs(y2 - y1)
-                        file_speed_w.write(f"{class_name},{dx},{dy},{heading},{speed},"
-                                           f"{center_2D[0]},{center_2D[1]},{bbox_width},{bbox_height},{lat_target},{lon_target},"
-                                           f"{size},{float(t.score) * 100},{int(tid)},{timestamp}\n")
+                        file_speed_w.write(f"{class_name},{dx},{dy},{heading},{speed},{size},{float(t.score) * 100},{int(tid)},{timestamp}\n")
 
                     # if args.show:
                     cv2.rectangle(frame, (int(tlwh[0]), int(tlwh[1])), (int(tlwh[0] + tlwh[2]), int(tlwh[1] + tlwh[3])), get_random_color(tid), 2)
@@ -546,7 +537,7 @@ def index():
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--engine', type=str, help='Engine file', default='../models/engine/yolov8n.engine')
-    parser.add_argument('--vid', type=str, help='Video files', default='../sample_video/2024_08_28_11_29_00_raw.mp4') # for video stream define your rtsp protocol
+    parser.add_argument('--vid', type=str, help='Video files', default='../sample_video/2024_08_28_13_03_00_raw.mp4') # for video stream define your rtsp protocol
     parser.add_argument('--device', type=str, default='cuda:0', help='TensorRT infer device')
     parser.add_argument('--udp_save', action='store_true', help='Save the 9 outputs in txt files')
     parser.add_argument('--recorded_time', action='store_true', help='Use time when the image was recored. From csv file.')
@@ -556,8 +547,8 @@ if __name__ == '__main__':
     parser.add_argument('--display_video', action='store_true', help='View the video live for debugging')
 
     args = parser.parse_args()
+    # main(args)
 
-## Start the web app
-    main(args,)
-    # threading.Thread(target=main, args=(args,), daemon=True).start()
-    # app.run(host='0.0.0.0', port=5000)
+# ## Start the web app
+    threading.Thread(target=main, args=(args,), daemon=True).start()
+    app.run(host='0.0.0.0', port=5000)
