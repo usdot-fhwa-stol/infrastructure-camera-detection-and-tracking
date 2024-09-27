@@ -1,4 +1,4 @@
-This repository contains the code developed by STAR Lab for object detection, tracking, and conflict point estimation on an edge device using live video streams. We utilized OpenCV to capture video from various sources, including cameras, video files, or RTSP streams, and implemented **YOLOv8 TensorRT** for object detection, along with **BYTETrack** for object tracking. Key features of this codebase include:
+This repository contains the code developed by the Saxton Transportation Operations Laboratory (STOl) for object detection, tracking, and conflict point estimation on an edge device using live video streams. We utilized OpenCV to capture video from various sources, including cameras, video files, or RTSP streams, and implemented **YOLOv8 TensorRT** for object detection, along with **BYTETrack** for object tracking. Key features of this codebase include:
 - Object detection
 - Object tracking
 - Calculation of speed, heading, and distance
@@ -11,13 +11,17 @@ The edge device used for this project is the NVIDIA JETSON ORIN NANO. Note: Diff
 
 ### Environment
 
-- NVIDIA CUDA: 11.4
-- NVIDIA TensorRT: 8.5.2
+- NVIDIA CUDA: 12.2
+- NVIDIA TensorRT >= 8.6.2
 
 
 #### Clone repository
 
-Clone repository from the shared google drive.
+Clone repository and submodules
+
+```bash
+git clone --recurse-submodules https://github.com/monjurulkarim/YOLOv8_Object_Tracking_TensorRT.git
+```
 
 #### Prepare enviroment
 
@@ -69,7 +73,7 @@ python3 export-det.py \
 --device cuda:0
 ```
 
-The output `.onnx` model will be saved in **`models/to_export`** folder, move the model to **`models/onnx`** folder 
+The output `.onnx` model will be saved in **`models/to_export`** folder, move the model to **`models/onnx`** folder
 ```bash
 mv ../../models/to_export/yolov8n.onnx ../../models/onnx/yolov8n.onnx
 ```
@@ -86,7 +90,7 @@ python3 build.py \
 --fp16  \
 --device cuda:0
 ```
-The output `.engine` model will be saved in **`models/onnx`** folder, move the model to **`models/trt`** folder 
+The output `.engine` model will be saved in **`models/onnx`** folder, move the model to **`models/trt`** folder
 
 ```bash
 mv ../../models/onnx/yolov8n.engine ../../models/engine/yolov8n.engine
@@ -100,9 +104,12 @@ bash build_opencv.sh
 
 ## Some code description
 
-`srcs/v2_stream.py`: This is the main script responsible for running and generating all required results. Users need to specify different parser arguments using flags (e.g., `--show`, `--vid`). Running this script starts the web app, allowing users to visualize the results in a browser within the local network.
+`srcs/yolov8_bytetrack_starlab.py`: This is the main script responsible for running and generating all required results. Users need to specify different parser arguments using flags (e.g., `--show`, `--vid`). Running this script starts the web app, allowing users to visualize the results in a browser within the local network.
+
 `srcs/template/index.html`: This file contains the HTML structure of the web app used for visualization.
+
 `srcs/config.py`: contains different parameters
+
 `models/` : contains the weights
 
 For more details we added additional comments in the code.
@@ -128,16 +135,12 @@ Running this code will start an web app which can be accessed using any browser.
 To run with raw, pre-recorded data: 
 ```bash
 python3 yolov8_bytetrack_stol.py --vid $(raw_video_path) --udp_save --output_filename $(desired_udp_file_header) --recorded_time --timestamp_file $(timestamps_csv_path)
-
 ```
 
 ---
 
 # References
 
-- [ultralytics](https://github.com/ultralytics/ultralytics) 
+- [ultralytics](https://github.com/ultralytics/ultralytics)
 - [YOLOv8-TensorRT](https://github.com/triple-Mu/YOLOv8-TensorRT)
 - [ByteTrack](https://github.com/ifzhang/ByteTrack)
-
-
-
