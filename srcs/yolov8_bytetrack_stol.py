@@ -503,10 +503,12 @@ def get_tracked_objects():
     global tracked_objects
     return jsonify(tracked_objects)
 
+## For speed up you may not want to transmit conflict data (most of the time no conflict actually), you can comment out this
 @app.route('/conflict_data')
 def get_conflict_data():
     global conflict_list
     return jsonify(conflict_list)
+##===
 
 @app.route('/')
 def index():

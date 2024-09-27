@@ -119,12 +119,17 @@ cd srcs
 
 **Run YOLOv8 + BYTETrack**
 
+To run with live data: 
 ```bash
-python3 yolov8_bytetrack_starlab.py
+python3 yolov8_bytetrack_stol.py 
+```
+Running this code will start an web app which can be accessed using any browser. Please make sure to define your devices IP address in the `templates/index.html` at line # 71.
+
+To run with raw, pre-recorded data: 
+```bash
+python3 yolov8_bytetrack_stol.py --vid $(raw_video_path) --udp_save --output_filename $(desired_udp_file_header) --recorded_time --timestamp_file $(timestamps_csv_path)
 
 ```
-
-Running this code will start an web app which can be accessed using any browser. Please make sure to define your devices IP address in the `templates/index.html` at line # 71.
 
 ---
 
