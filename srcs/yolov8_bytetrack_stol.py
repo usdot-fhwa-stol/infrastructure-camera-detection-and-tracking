@@ -265,13 +265,20 @@ def main(args):
 
     filename = args.output_filename
     path_save_results = args.result_dir + 'results'
-    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-    out = cv2.VideoWriter(path_save_results + "/" + filename + "_detections.mp4", fourcc, 13, (video_width, video_height))
+    
+    if args.store_video:
+        fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+        out = cv2.VideoWriter(path_save_results + "/" + filename + "_detections.mp4", fourcc, 13, (video_width, video_height))
 
     if args.udp_save:
+        filename = args.output_filename
+        path_save_results = args.result_dir + 'results'
         file_speed_w = open(path_save_results + "/" + filename + "_results.txt", "w")
 
     if args.recorded_time:
+        if args.timestamp_file is None:
+            print(f'Please enter the name of the timestamps file with "--timestamp_file $(name.csv)"')
+            exit()
         df = pd.read_csv(args.timestamp_file)
 
 
@@ -281,7 +288,6 @@ def main(args):
     prev_times = {}
 
     counter = 0
-    frame_count = 0
 
     while(True):
         ret, frame = cap.read()
@@ -415,6 +421,11 @@ def main(args):
                     'size': size,
                     'score': float(t.score)*100,
                     })
+            if args.store_video:
+                out.write(frame)
+            if args.display_video:
+                cv2.imshow('image', frame)
+                cv2.waitKey(1)
 
             # # Detect potential conflicts
             # conflicts = detect_conflict_with_prediction(vehicles)
@@ -476,7 +487,8 @@ def main(args):
             latest_frame = frame.copy()
 
     cap.release()
-    out.release()
+    if args.store_video:
+        out.release()
     cv2.destroyAllWindows()
 
 def generate_frames():
@@ -522,14 +534,15 @@ if __name__ == '__main__':
     parser.add_argument('--vid', type=str, help='Video files', default='../sample_video/2024_08_28_13_03_00_raw.mp4') # for video stream define your rtsp protocol
     parser.add_argument('--device', type=str, default='cuda:0', help='TensorRT infer device')
     parser.add_argument('--udp_save', action='store_true', help='Save the 9 outputs in txt files')
-    parser.add_argument('--recorded_time', action='store_true', help='Use time when the image was recored. From csv file.')
     parser.add_argument('--result_dir', type=str, help='UDP save directory', default='../sample_video/test')
-    parser.add_argument('--timestamp_file', type=str, help='Filename for output')
-    parser.add_argument('--output_filename', type=str, help='Filename for output')
+    parser.add_argument('--output_filename', type=str, help='Filename for output', default='')
+    parser.add_argument('--recorded_time', action='store_true', help='Input timestamps from a file, when processing raw data')
+    parser.add_argument('--timestamp_file', type=str, help='Filename for timestamps csv, when processing raw data')
     parser.add_argument('--display_video', action='store_true', help='View the video live for debugging')
+    parser.add_argument('--store_video', action='store_true', help='Store video with detected objects')
 
     args = parser.parse_args()
-    # main(args)
+    main(args)
 
 # ## Start the web app
     threading.Thread(target=main, args=(args,), daemon=True).start()
