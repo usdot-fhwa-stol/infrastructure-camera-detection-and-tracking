@@ -1,6 +1,4 @@
-# infrastructure-camera-detection-and-tracking
-
-This repository contains the code developed by STAR Lab in partnership with the Saxton Transportation and Operations Laboratory (STOL) for object detection, tracking, and conflict point estimation on an edge device using live video streams. The software utilizes OpenCV to capture video from various sources, including cameras, video files, or RTSP streams. Additionally, **YOLOv8 TensorRT** has been implemented for object detection, along with **BYTETrack** for object tracking. Key features of this codebase include:
+This repository contains the code developed by STAR Lab for object detection, tracking, and conflict point estimation on an edge device using live video streams. We utilized OpenCV to capture video from various sources, including cameras, video files, or RTSP streams, and implemented **YOLOv8 TensorRT** for object detection, along with **BYTETrack** for object tracking. Key features of this codebase include:
 - Object detection
 - Object tracking
 - Calculation of speed, heading, and distance
@@ -8,23 +6,18 @@ This repository contains the code developed by STAR Lab in partnership with the 
 - Output transmission via UDP protocol
 - Hosting a web app for visualizing results through a web interface
 
-The edge device used for this project is the NVIDIA JETSON ORIN NANO. Note that this codebase has been initially tested on a MUST Sensor, and different versions of MUST sensors are sold with various JETSON devices. Please ensure your MUST sensor includes this platform or a more advanced one.
-
+The edge device used for this project is the NVIDIA JETSON ORIN NANO. Note: Different versions of MUST sensors are sold with various JETSON devices. Please ensure your MUST sensor includes this platform or a more advanced one.
 ## Getting Started
 
 ### Environment
 
-- NVIDIA CUDA: 12.2
-- NVIDIA TensorRT >= 8.6.2
+- NVIDIA CUDA: 11.4
+- NVIDIA TensorRT: 8.5.2
 
 
 #### Clone repository
 
-Clone repository and submodules
-
-```bash
-git clone --recurse-submodules https://github.com/monjurulkarim/YOLOv8_Object_Tracking_TensorRT.git
-```
+Clone repository from the shared google drive.
 
 #### Prepare enviroment
 
@@ -76,7 +69,7 @@ python3 export-det.py \
 --device cuda:0
 ```
 
-The output `.onnx` model will be saved in **`models/to_export`** folder, move the model to **`models/onnx`** folder
+The output `.onnx` model will be saved in **`models/to_export`** folder, move the model to **`models/onnx`** folder 
 ```bash
 mv ../../models/to_export/yolov8n.onnx ../../models/onnx/yolov8n.onnx
 ```
@@ -93,7 +86,7 @@ python3 build.py \
 --fp16  \
 --device cuda:0
 ```
-The output `.engine` model will be saved in **`models/onnx`** folder, move the model to **`models/trt`** folder
+The output `.engine` model will be saved in **`models/onnx`** folder, move the model to **`models/trt`** folder 
 
 ```bash
 mv ../../models/onnx/yolov8n.engine ../../models/engine/yolov8n.engine
@@ -107,12 +100,9 @@ bash build_opencv.sh
 
 ## Some code description
 
-`srcs/yolov8_bytetrack_starlab.py`: This is the main script responsible for running and generating all required results. Users need to specify different parser arguments using flags (e.g., `--show`, `--vid`). Running this script starts the web app, allowing users to visualize the results in a browser within the local network.
-
+`srcs/v2_stream.py`: This is the main script responsible for running and generating all required results. Users need to specify different parser arguments using flags (e.g., `--show`, `--vid`). Running this script starts the web app, allowing users to visualize the results in a browser within the local network.
 `srcs/template/index.html`: This file contains the HTML structure of the web app used for visualization.
-
 `srcs/config.py`: contains different parameters
-
 `models/` : contains the weights
 
 For more details we added additional comments in the code.
@@ -140,23 +130,9 @@ Running this code will start an web app which can be accessed using any browser.
 
 # References
 
-- [ultralytics](https://github.com/ultralytics/ultralytics)
+- [ultralytics](https://github.com/ultralytics/ultralytics) 
 - [YOLOv8-TensorRT](https://github.com/triple-Mu/YOLOv8-TensorRT)
 - [ByteTrack](https://github.com/ifzhang/ByteTrack)
 
-## Contribution
-Welcome to the CARMA contributing guide. Please read this guide to learn about our development process, how to propose pull requests and improvements, and how to build and test your changes to this project. [CARMA Contributing Guide](https://github.com/usdot-fhwa-stol/carma-platform/blob/develop/Contributing.md)
 
-## Code of Conduct
-Please read our [CARMA Code of Conduct](https://github.com/usdot-fhwa-stol/carma-platform/blob/develop/Code_of_Conduct.md) which outlines our expectations for participants within the CARMA community, as well as steps to reporting unacceptable behavior. We are committed to providing a welcoming and inspiring community for all and expect our code of conduct to be honored. Anyone who violates this code of conduct may be banned from the community.
 
-## Attribution
-The development team would like to acknowledge the people who have made direct contributions to the design and code in this repository. [CARMA Attribution](https://github.com/usdot-fhwa-stol/carma-platform/blob/develop/ATTRIBUTION.txt)
-
-## License
-By contributing to the Federal Highway Administration (FHWA) Connected Automated Research Mobility Applications (CARMA), you agree that your contributions will be licensed under its Apache License 2.0 license. [CARMA License](https://github.com/usdot-fhwa-stol/carma-platform/blob/develop/docs/License.md)
-
-## Contact
-Please click on the CARMA logo below to visit the Federal Highway Adminstration(FHWA) CARMA website.
-
-[![CARMA Image](https://raw.githubusercontent.com/usdot-fhwa-stol/carma-platform/develop/docs/image/CARMA_icon.png)](https://highways.dot.gov/research/research-programs/operations/CARMA)
