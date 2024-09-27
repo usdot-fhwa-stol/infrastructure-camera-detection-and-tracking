@@ -51,6 +51,38 @@ debounce_tracker = {}
 color_dict = {}
 
 
+# All 0.9052174687385559
+# Insanely good with 0.25 height offset
+K = np.array([[8.94429165e+02, 0.00000000e+00, 6.45495370e+02],
+ [0.00000000e+00, 1.12363936e+03, 4.20210159e+02],
+ [0.00000000e+00, 0.00000000e+00, 1.00000000e+00]])
+d = np.array([-0.51498051,  0.10524621, -0.00603029, -0.02139855,  0.00616998])
+newcameramatrix = np.array([[387.33544107,   0.,         534.09059684],
+ [  0.,         505.10401128, 436.17367482],
+ [  0.,           0.,           1.        ]])
+H = np.array([[ 3.31445642e-02,  4.00938084e-01, -1.22143253e+02],
+ [-1.29239710e-02, -1.56338683e-01,  4.76273545e+01],
+ [-2.71362493e-04, -3.28251998e-03,  1.00000000e+00]])
+
+def vehicle_center_to_latlon(center, bbox):
+    image_cx, image_cy = center
+    x1, y1, x2, y2 = bbox
+    bbox_height = np.abs(y2 - y1)
+    distorted_points = np.float32(np.vstack((image_cx, image_cy + bbox_height*0.25)).T).reshape(-1, 1, 2)
+    distorted_points = np.float32(np.vstack((image_cx, image_cy)).T).reshape(-1, 1, 2)
+    image_coords_und = cv2.undistortPoints(distorted_points, K, d, P=newcameramatrix)
+    latlon_coords = cv2.perspectiveTransform(image_coords_und, H)
+    lon_offset = 6.677e-06
+    lat_offset = 4.500e-06
+    lon_final = latlon_coords[0, 0, 0] + lon_offset # 0.5, 0.75 0.905
+    lat_final = latlon_coords[0, 0, 1] - lat_offset # 0.5, 0.75 0.905
+    # print(f'final lat/lon: [{lat_final}, {lon_final}]')
+    # must_sensor_dist = haversine_distance(MUST_sensor_loc[1], MUST_sensor_loc[0], lat_final, lon_final)
+    # print(f'distance from MUST sensor: {must_sensor_dist}')
+
+    return (lat_final, lon_final)
+
+
 def get_random_color(id):
     if id not in color_dict:
         color_dict[id] = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
@@ -359,15 +391,16 @@ def main(args):
                 tid = t.track_id
                 bbox = [tlwh[0], tlwh[1], tlwh[0] + tlwh[2], tlwh[1] + tlwh[3]]
 
-                clss = t.cls
-                class_name = CLASSES[int(clss)]
+                class_index = t.cls
+                class_name = CLASSES[int(class_index)]
                 online_tlwhs.append(tlwh)
                 online_ids.append(tid)
                 online_scores.append(t.score)
                 online_cls.append(class_name)
 
                 center_2D = calculate_center_point(bbox)
-                center = xy2latlon(center_2D)
+                # center = xy2latlon(center_2D)
+                center = vehicle_center_to_latlon(center_2D, bbox)
 
                 if tid in prev_centers and tid in prev_times:
                     heading = calculate_bearing(prev_centers[tid], center)
@@ -377,11 +410,11 @@ def main(args):
                     speed = 0
 
                 size = ""
-                if int(clss) in [0, 1, 3]:
+                if int(class_index) in [0, 1, 3]:
                     size = 'small'
-                elif int(clss) in [2]:
+                elif int(class_index) in [2]:
                     size = 'medium'
-                elif int(clss) in [5, 7]:
+                elif int(class_index) in [5, 7]:
                     size = 'large'
                 else:
                     size = 'N/A'
