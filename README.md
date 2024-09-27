@@ -1,4 +1,4 @@
-This repository contains the code developed by the Saxton Transportation Operations Laboratory (STOl) for object detection, tracking, and conflict point estimation on an edge device using live video streams. We utilized OpenCV to capture video from various sources, including cameras, video files, or RTSP streams, and implemented **YOLOv8 TensorRT** for object detection, along with **BYTETrack** for object tracking. Key features of this codebase include:
+This repository contains the code developed by the Saxton Transportation Operations Laboratory (STOL) for object detection, tracking, and conflict point estimation on an edge device using live video streams. We utilized OpenCV to capture video from various sources, including cameras, video files, or RTSP streams, and implemented **YOLOv8 TensorRT** for object detection, along with **BYTETrack** for object tracking. Key features of this codebase include:
 - Object detection
 - Object tracking
 - Calculation of speed, heading, and distance
@@ -126,13 +126,13 @@ cd srcs
 
 **Run YOLOv8 + BYTETrack**
 
-To run with live data: 
+To run with live data:
 ```bash
-python3 yolov8_bytetrack_stol.py 
+python3 yolov8_bytetrack_stol.py
 ```
 Running this code will start an web app which can be accessed using any browser. Please make sure to define your devices IP address in the `templates/index.html` at line # 71.
 
-To run with raw, pre-recorded data: 
+To run with raw, pre-recorded data:
 ```bash
 python3 yolov8_bytetrack_stol.py --vid $(raw_video_path) --udp_save --output_filename $(desired_udp_file_header) --recorded_time --timestamp_file $(timestamps_csv_path)
 ```
