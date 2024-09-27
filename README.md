@@ -1,4 +1,4 @@
-This repository contains the code developed by STAR Lab for object detection, tracking, and conflict point estimation on an edge device using live video streams. We utilized OpenCV to capture video from various sources, including cameras, video files, or RTSP streams, and implemented **YOLOv8 TensorRT** for object detection, along with **BYTETrack** for object tracking. Key features of this codebase include:
+This repository contains the code developed by STAR Lab in partnership with the Saxton Transportation and Operations Laboratory (STOL) for object detection, tracking, and conflict point estimation on an edge device using live video streams. The software utilizes OpenCV to capture video from various sources, including cameras, video files, or RTSP streams. Additionally, **YOLOv8 TensorRT** has been implemented for object detection, along with **BYTETrack** for object tracking. Key features of this codebase include:
 - Object detection
 - Object tracking
 - Calculation of speed, heading, and distance
@@ -6,7 +6,7 @@ This repository contains the code developed by STAR Lab for object detection, tr
 - Output transmission via UDP protocol
 - Hosting a web app for visualizing results through a web interface
 
-The edge device used for this project is the NVIDIA JETSON ORIN NANO. Note: Different versions of MUST sensors are sold with various JETSON devices. Please ensure your MUST sensor includes this platform or a more advanced one.
+The edge device used for this project is the NVIDIA JETSON ORIN NANO. Note that this codebase has been initially tested on a MUST Sensor, and different versions of MUST sensors are sold with various JETSON devices. Please ensure your MUST sensor includes this platform or a more advanced one.
 ## Getting Started
 
 ### Environment
