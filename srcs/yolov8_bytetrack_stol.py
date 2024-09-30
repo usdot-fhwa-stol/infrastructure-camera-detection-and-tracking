@@ -443,6 +443,14 @@ def main(args):
                         # Needs to update
                         file_speed_w.write(f"{class_name},{dx},{dy},{heading},{speed},{size},{float(t.score) * 100},{int(tid)},{timestamp}\n")
 
+                        ## If you want to output data to be processed by the data analysis, MUST_CP_calibration_analysis.py, comment the above udp command and replace with this one:
+                        # x1, y1, x2, y2 = bbox
+                        # bbox_width = np.abs(x2 - x1)
+                        # bbox_height = np.abs(y2 - y1)
+                        # file_speed_w.write(f"{class_name},{dx},{dy},{heading},{speed},"
+                        #                    f"{center_2D[0]},{center_2D[1]},{bbox_width},{bbox_height},"
+                        #                    f"{size},{float(t.score) * 100},{int(tid)},{timestamp}\n")
+
                     # if args.show:
                     cv2.rectangle(frame, (int(tlwh[0]), int(tlwh[1])), (int(tlwh[0] + tlwh[2]), int(tlwh[1] + tlwh[3])), get_random_color(tid), 2)
                     cv2.putText(frame, str(tid), (int(tlwh[0]), int(tlwh[1])), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
